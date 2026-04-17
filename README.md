@@ -108,6 +108,99 @@ Buka file `taskScheduler.xlsx` dan tambahkan baris pada sheet **job**:
 ### Langkah 4: Restart Aplikasi
 Aplikasi akan membaca ulang konfigurasi Excel saat pertama kali dijalankan. Restart aplikasi untuk mengaktifkan job baru.
 
+## 💡 Code Examples
+
+Berikut adalah contoh implementasi pola kode yang umum digunakan dalam proyek ini:
+
+### 1. Streaming Upload (Oracle to MySQL)
+Gunakan pola ini untuk memindahkan data antar database tanpa membebani memori (RAM).
+```javascript
+const { upload } = require("../dbase");
+const helper = require("../helper");
+
+async function syncData() {
+    await upload({
+        dbSrc: "wms",        // Koneksi Oracle (lihat helper.js)
+        dbDest: "wise",      // Koneksi MySQL (lihat helper.js)
+        sqlPath: "wise",     // Sub-folder di dalam folder /sql
+        sqlSrc: "source.sql", // File query di sql/wise/source.sql
+        sqlDest: "insert.sql", // File query di sql/wise/insert.sql
+        fetchSize: 500,
+        uploadName: "Sync Master Data",
+        onProgress: (p) => {
+            console.log(`Progress: ${p.totalInsert} / ${p.totalData}`);
+        }
+    });
+}
+```
+
+### 2. Create Excel Report & Send Email
+Pola standar untuk menghasilkan laporan berkala dalam format .xlsx.
+```javascript
+const { getConnect } = require("../dbase");
+const ExcelApp = require("../ExcelApp");
+const mail = require("../mail");
+const moment = require("moment");
+
+async function dailyStockReport() {
+    const db = await getConnect("wms");
+    const { rows } = await db.execute("SELECT ITEM_ID, ON_HAND_QTY FROM WM_INVENTORY");
+    
+    const fileName = `Stock_Report_${moment().format("YYYYMMDD")}.xlsx`;
+    const path = "C:/Atoreps Report/Stock";
+    
+    // Generate Excel
+    const xlsx = await ExcelApp.xlsx(path, fileName, [{ sheetName: "Inventory", data: rows }]);
+    
+    // Kirim Email
+    await mail.send({
+        to: "manager@company.com",
+        subject: "Daily Stock Report",
+        message: "Halo, berikut adalah laporan stok hari ini.",
+        attachments: [{ 
+            filename: xlsx.fileName, 
+            path: xlsx.pathReport + "/" + xlsx.fileName 
+        }]
+    });
+    await db.close();
+}
+```
+
+### 3. Generate Jasper (PDF) & Send Email
+Gunakan pola ini untuk laporan yang membutuhkan template formal (.jrxml).
+```javascript
+const Jasper = require("../jasper");
+const mail = require("../mail");
+const path = require("path");
+
+async function printInvoice(invoiceNo) {
+    const outputDir = "C:/Atoreps Report/Invoices";
+    const fileName = `Invoice_${invoiceNo}`;
+    
+    const report = await Jasper.run({
+        jasper: path.join(__dirname, "../jasper/Invoice_Template.jrxml"),
+        jdbc_driver: "oracle.jdbc.driver.OracleDriver",
+        jdbc_url: "jdbc:oracle:thin:@//172.xx.xx.xx:1521/SERVICE_NAME",
+        username: "USER",
+        password: "PASSWORD",
+        paramters: [{ INVOICE_NO: invoiceNo }],
+        output: outputDir,
+        filename: fileName,
+        format: "pdf"
+    });
+
+    await mail.send({
+        to: "customer@client.com",
+        subject: `Invoice #${invoiceNo}`,
+        message: "Terlampir invoice pesanan Anda.",
+        attachments: [{ 
+            filename: report.fileName, 
+            path: report.pathReport + "/" + report.fileName 
+        }]
+    });
+}
+```
+
 ## ⚙️ Persyaratan Sistem
 
 - **Node.js:** Versi 16.x atau lebih tinggi.
