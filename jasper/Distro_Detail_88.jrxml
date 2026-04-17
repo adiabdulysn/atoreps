@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2025-09-03T08:37:13 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Distro_Detail" language="groovy" pageWidth="612" pageHeight="792" whenNoDataType="BlankPage" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d8510694-f729-40c8-bdcb-fe46a7d8b813">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.governor.max.pages" value="9999999"/>
+	<property name="net.sf.jasperreports.governor.max.pages.enabled" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PROD"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="a_tc_shipment_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select distinct d.tc_order_id,
+    d.parent_order_id,
+    f.dsp_sku,
+    f.sku_desc,
+    sum(i.size_value) pakd_qty,
+    d.d_facility_alias_id,
+    d.d_facility_name,
+    d.o_facility_alias_id,
+    d.o_facility_name,
+    g.description do_status,
+    a.tc_shipment_id,
+    f.unit_price,
+    f.retail_price,
+    h.quantity,
+    sum(i.size_value/h.quantity) collie,
+    case when order_type='X' then 'X-Dock' else 'Reguler' end as order_type,
+    trunc(max(b.loaded_dttm)) loaded_date,
+    a.assigned_ship_via ship_via,
+    a.trailer_number,
+    a.trlr_type||trlr_size Countainer_type,
+    substr(a.assigned_ship_via,1,1) Trans_type,
+    a.seal_number
+from shipment a,
+    outpt_lpn b,
+    outpt_order_line_item c,
+    orders d,
+    item_master f,
+    do_status g,
+    item_package_cbo h,
+    outpt_lpn_detail i
+where a.tc_shipment_id=b.tc_shipment_id
+and b.invc_batch_nbr=c.invc_batch_nbr
+and c.item_id=f.item_id
+and c.tc_order_id=d.tc_order_id
+and b.tc_order_id=d.parent_order_id
+and d.do_status=g.order_status
+and c.item_id=h.item_id
+and f.item_id=h.item_id
+and b.tc_lpn_id=i.tc_lpn_id
+and LINE_ITEM_ID=DISTRIBUTION_ORDER_DTL_ID
+and c.shipped_qty>0
+and h.PACKAGE_UOM_ID='46'
+and h.is_std='1'
+and h.MARK_FOR_DELETION='0'
+$P!{a_tc_shipment_id}
+group by  d.tc_order_id,
+    d.parent_order_id,
+    f.dsp_sku,
+    f.sku_desc,
+    d.d_facility_alias_id,
+    d.d_facility_name,
+    d.o_facility_alias_id,
+    d.o_facility_name,
+    g.description,
+    a.tc_shipment_id,
+    f.unit_price,
+    f.retail_price,
+    h.quantity,
+    d.order_type,
+    a.assigned_ship_via,
+    trailer_number,
+    a.trlr_type||trlr_size,
+    substr(a.assigned_ship_via,1,1),
+    a.seal_number
+order by a.tc_shipment_id,d.tc_order_id,dsp_sku]]>
+	</queryString>
+	<field name="TC_ORDER_ID" class="java.lang.String"/>
+	<field name="PARENT_ORDER_ID" class="java.math.BigDecimal"/>
+	<field name="DSP_SKU" class="java.lang.String"/>
+	<field name="SKU_DESC" class="java.lang.String"/>
+	<field name="PAKD_QTY" class="java.math.BigDecimal"/>
+	<field name="D_FACILITY_ALIAS_ID" class="java.lang.String"/>
+	<field name="D_FACILITY_NAME" class="java.lang.String"/>
+	<field name="O_FACILITY_ALIAS_ID" class="java.lang.String"/>
+	<field name="O_FACILITY_NAME" class="java.lang.String"/>
+	<field name="DO_STATUS" class="java.lang.String"/>
+	<field name="TC_SHIPMENT_ID" class="java.lang.String"/>
+	<field name="UNIT_PRICE" class="java.math.BigDecimal"/>
+	<field name="RETAIL_PRICE" class="java.math.BigDecimal"/>
+	<field name="QUANTITY" class="java.math.BigDecimal"/>
+	<field name="COLLIE" class="java.math.BigDecimal"/>
+	<field name="ORDER_TYPE" class="java.lang.String"/>
+	<field name="LOADED_DATE" class="java.sql.Timestamp"/>
+	<field name="SHIP_VIA" class="java.lang.String"/>
+	<field name="TRAILER_NUMBER" class="java.lang.String"/>
+	<field name="COUNTAINER_TYPE" class="java.lang.String"/>
+	<field name="TRANS_TYPE" class="java.lang.String"/>
+	<field name="SEAL_NUMBER" class="java.lang.String"/>
+	<variable name="totCollie" class="java.lang.Number" resetType="Group" resetGroup="TC_ORDER_ID">
+		<variableExpression><![CDATA[$F{COLLIE}]]></variableExpression>
+	</variable>
+	<variable name="totQty" class="java.lang.Number" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{PAKD_QTY}]]></variableExpression>
+	</variable>
+	<variable name="COLLIE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{COLLIE}]]></variableExpression>
+	</variable>
+	<variable name="PAKD_QTY_1" class="java.math.BigDecimal" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{PAKD_QTY}]]></variableExpression>
+	</variable>
+	<variable name="UNIT_PRICE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{UNIT_PRICE}]]></variableExpression>
+	</variable>
+	<variable name="RETAIL_PRICE_1" class="java.math.BigDecimal" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{RETAIL_PRICE}]]></variableExpression>
+	</variable>
+	<variable name="COLLIE_2" class="java.math.BigDecimal" resetType="Group" resetGroup="TC_ORDER_ID" calculation="Sum">
+		<variableExpression><![CDATA[$F{COLLIE}]]></variableExpression>
+	</variable>
+	<group name="TC_ORDER_ID">
+		<groupExpression><![CDATA[$F{TC_ORDER_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="29">
+				<staticText>
+					<reportElement x="1" y="4" width="68" height="20" uuid="cbc72bad-4faa-4249-8326-084362fa3202"/>
+					<text><![CDATA[#STM]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="40" y="4" width="75" height="20" uuid="5bb12f0b-3eaa-4e46-8e37-cc3853dc28f7"/>
+					<textFieldExpression><![CDATA[$F{TC_ORDER_ID}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="213" y="4" width="66" height="20" uuid="9fd6381a-5bb7-4eea-9a8f-8b21c694af0d"/>
+					<textFieldExpression><![CDATA[$F{PARENT_ORDER_ID}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="160" y="4" width="53" height="20" uuid="b3de9475-8dcb-4721-92b2-1d99ee7bb67c"/>
+					<text><![CDATA[#Parent ID]]></text>
+				</staticText>
+				<textField pattern="">
+					<reportElement x="334" y="4" width="100" height="20" uuid="a766b42c-b1b8-4375-bc02-77b1f66343a6"/>
+					<textFieldExpression><![CDATA[$F{ORDER_TYPE}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="25" width="572" height="1" uuid="f48ac97e-47da-4486-8f9f-24be85b0bdb7"/>
+				</line>
+				<line>
+					<reportElement x="0" y="2" width="572" height="1" uuid="6baf8478-b625-4f33-81db-e0890f5bde2e"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="31">
+				<staticText>
+					<reportElement x="334" y="4" width="86" height="20" uuid="6e109c97-f0d3-4885-82aa-0d45ec994f79"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<text><![CDATA[Sub Total]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="515" y="3" width="56" height="20" uuid="3b149937-76a3-4e54-b289-fe4eefe9b2a4"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{PAKD_QTY_1}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00">
+					<reportElement x="442" y="3" width="50" height="20" uuid="bb9c5ec0-eefa-4ef4-916f-87e3c44e97af"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{COLLIE_1}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="PARENT_ORDER_ID">
+		<groupExpression><![CDATA[$F{PARENT_ORDER_ID}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="142" splitType="Stretch">
+			<staticText>
+				<reportElement x="185" y="3" width="207" height="20" uuid="cc03ee12-eade-42c0-93c9-ba8e9cacea9e"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<text><![CDATA[PT. Matahari Putra Prima Tbk.]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy h.mm a">
+				<reportElement x="47" y="23" width="100" height="20" uuid="a556667d-c6fc-45fa-a90d-2eafa2322ad9"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="23" width="100" height="20" uuid="e4898eb1-d397-4aba-acf2-c63af05b4193"/>
+				<text><![CDATA[Print On:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="55" width="100" height="20" uuid="cecacd1e-f564-4af6-a940-1d2275084bae"/>
+				<text><![CDATA[DC Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="75" width="100" height="20" uuid="efad24ff-8603-4c2d-9a01-8dc3577f1215"/>
+				<text><![CDATA[DC Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="95" width="100" height="20" uuid="b3e269d5-efde-442a-9709-3894fd4617c1"/>
+				<text><![CDATA[Store Code]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="95" width="100" height="20" uuid="b2541c00-9be0-44d4-bbef-745da5b402a8"/>
+				<text><![CDATA[Store Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="55" width="100" height="20" uuid="3f68657a-73b5-4ec4-904f-193020074f04"/>
+				<text><![CDATA[Surat Jalan Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="292" y="75" width="100" height="20" uuid="0d901720-0f0f-4d86-963f-93335020ed94"/>
+				<text><![CDATA[Surat Jalan Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="115" width="100" height="20" uuid="72b3ff38-8199-49e2-9a7b-5e25812f9fda"/>
+				<text><![CDATA[Ref Number]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="55" width="100" height="20" uuid="07bd6d21-1b58-4c72-b3a3-3a3588942ab9"/>
+				<textFieldExpression><![CDATA[$F{O_FACILITY_ALIAS_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="75" width="100" height="20" uuid="7c2d6650-cabb-4dac-a516-7095788a171c"/>
+				<textFieldExpression><![CDATA[$F{O_FACILITY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="95" width="168" height="20" uuid="bf158476-fe22-484c-93ea-f874f9dc228b"/>
+				<textFieldExpression><![CDATA[$F{D_FACILITY_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="75" width="168" height="20" uuid="2673026c-b6a1-477f-a587-244a725bc906"/>
+				<textFieldExpression><![CDATA[$F{LOADED_DATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="392" y="55" width="168" height="20" uuid="9a7a00d6-b4e2-4464-b1f2-bcc87dc54179"/>
+				<textFieldExpression><![CDATA[$F{TC_SHIPMENT_ID}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="100" y="115" width="100" height="20" uuid="3394e910-8dfc-4913-815f-803c7957bb4a"/>
+				<textFieldExpression><![CDATA[$F{SEAL_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="95" width="100" height="20" uuid="1bfa95c1-ceec-47d8-8f8c-f7b76eaa4054"/>
+				<textFieldExpression><![CDATA[$F{D_FACILITY_ALIAS_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="6" width="68" height="20" uuid="78b2ef79-578e-455f-973e-ec70e47f7657"/>
+				<text><![CDATA[DSP_SKU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="80" y="6" width="100" height="20" uuid="9309f09c-a89d-4222-9325-37f84e4abd7c"/>
+				<text><![CDATA[SKU_DESC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="443" y="6" width="50" height="20" uuid="25c5856a-c90d-46dd-9c4e-d877cc81e2fa"/>
+				<text><![CDATA[COLLIE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="516" y="6" width="56" height="20" uuid="5312f92a-4609-4466-b504-7c9f9d909b21"/>
+				<text><![CDATA[PAKD QTY]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="2" width="572" height="1" uuid="476fe692-5254-494c-8e3f-955010354f57"/>
+			</line>
+			<line>
+				<reportElement x="0" y="25" width="572" height="1" uuid="ba65d4ea-3627-43af-87f1-939947e5339e"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="68" height="20" uuid="e7c8d35a-7f9c-4d5a-984e-4d5391c79923"/>
+				<textFieldExpression><![CDATA[$F{DSP_SKU}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="442" y="1" width="50" height="20" uuid="6445f59d-f016-4a48-8920-5b94ecd54452"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{COLLIE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement x="515" y="0" width="56" height="20" uuid="f56f7010-7794-4294-8aa4-617d1a0d9885"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{PAKD_QTY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="80" y="0" width="254" height="20" uuid="4b2a4c62-b041-457f-8956-c68c1532d98e"/>
+				<textFieldExpression><![CDATA[$F{SKU_DESC}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="235" y="0" width="80" height="20" uuid="cdb35845-47c8-483e-be46-13d8866d9b92"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="315" y="0" width="40" height="20" uuid="6d27d5d4-9e63-49ab-9c6c-1fdaa06adb81"/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

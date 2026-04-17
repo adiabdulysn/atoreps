@@ -1,0 +1,12 @@
+ INSERT INTO order_cancels (dc, facility_id, order_number, order_type, order_date, item_id, uom, standard_pack, item_value, ordered_qty, waved_qty, packed_qty, cancelled_qty, cancelled_reason)
+      VALUES ?
+ON DUPLICATE KEY UPDATE facility_id = VALUES(facility_id)
+                      , order_type = VALUES(order_type)
+                      , order_date = VALUES(order_date)
+                      , uom = VALUES(uom)
+                      , standard_pack = VALUES(standard_pack)
+                      , item_value = VALUES(item_value)
+                      , ordered_qty = VALUES(ordered_qty)
+                      , waved_qty = VALUES(waved_qty)
+                      , packed_qty = VALUES(packed_qty)
+                      , cancelled_qty = VALUES(cancelled_qty)

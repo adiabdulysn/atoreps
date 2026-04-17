@@ -1,0 +1,29 @@
+# Dependency directories
+node_modules/
+lib/instantclient_12_2/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Temporary files
+temp/
+.tmp/
+
+# Sensitive data
+emailPassword.json
+.env
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# Build/Package files
+atoreps.rar
+*.zip
+*.7z
+
+# App Specific
+C:/Atoreps Report/

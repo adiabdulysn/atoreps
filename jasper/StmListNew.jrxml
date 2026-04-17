@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2025-02-01T14:38:55 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StmList_Cib" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="510fbbac-65c1-48c7-b13e-0960a88c5dc1">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="WMC"/>
+	<parameter name="TC_SHIPMENT_ID" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+	DISTINCT OL.C_FACILITY_ALIAS_ID WH,
+	OL.FINAL_DEST_FACILITY_ALIAS_ID STORE,
+	FA.FACILITY_NAME STORE_NAME,
+	L.MINOR_ORDER_NBR STM_NBR,
+	L.TC_LPN_ID OB_CTN,
+	L.ITEM_NAME SKU,
+	IC.DESCRIPTION SKU_DESC,
+	DECODE(L.QTY_UOM, 'U', 'Units', 'H', 'Hecto')UOM,
+	IPC.QUANTITY STD,
+	L.SIZE_VALUE SHIP_QTY,
+	OL.MISC_NUM_1 COLLIE,
+	OL.TC_SHIPMENT_ID,
+	to_char(L.SHIP_DATE,'DD-Mon-YYYY') SHIP_DATE
+FROM
+	(
+	SELECT
+		DISTINCT OLD.INVC_BATCH_NBR,
+		OLD.MINOR_ORDER_NBR,
+		OLD.TC_LPN_ID,
+		OLD.ITEM_NAME,
+		OLD.QTY_UOM,
+		OLD.SIZE_VALUE,
+		TRUNC(OLD.LAST_UPDATED_DTTM)SHIP_DATE,
+		OLD.LAST_UPDATED_SOURCE
+	FROM
+		OUTPT_LPN_DETAIL OLD,
+		OUTPT_LPN OL
+	WHERE
+		OLD.INVC_BATCH_NBR = OL.INVC_BATCH_NBR) L,
+	OUTPT_LPN OL,
+	ITEM_CBO IC,
+	ITEM_PACKAGE_CBO IPC,
+	FACILITY_ALIAS FA
+WHERE
+	L.TC_LPN_ID = OL.TC_LPN_ID
+	AND L.INVC_BATCH_NBR = OL.INVC_BATCH_NBR
+	AND L.ITEM_NAME = IC.ITEM_NAME(+)
+	AND IC.ITEM_ID = IPC.ITEM_ID(+)
+	AND OL.FINAL_DEST_FACILITY_ALIAS_ID = FA.FACILITY_ALIAS_ID
+	AND OL.PROC_STAT_CODE = '90'
+	AND IC.MARK_FOR_DELETION = '0'
+	AND IPC.MARK_FOR_DELETION = '0'
+	AND IPC.IS_STD = '1'
+	AND IPC.PACKAGE_UOM_ID = '46'
+	$P!{TC_SHIPMENT_ID}
+ORDER BY
+	OL.FINAL_DEST_FACILITY_ALIAS_ID,
+	L.MINOR_ORDER_NBR,
+	L.TC_LPN_ID]]>
+	</queryString>
+	<field name="WH" class="java.lang.String"/>
+	<field name="STORE" class="java.lang.String"/>
+	<field name="STORE_NAME" class="java.lang.String"/>
+	<field name="STM_NBR" class="java.lang.String"/>
+	<field name="OB_CTN" class="java.lang.String"/>
+	<field name="SKU" class="java.lang.String"/>
+	<field name="SKU_DESC" class="java.lang.String"/>
+	<field name="UOM" class="java.lang.String"/>
+	<field name="STD" class="java.math.BigDecimal"/>
+	<field name="SHIP_QTY" class="java.math.BigDecimal"/>
+	<field name="COLLIE" class="java.math.BigDecimal"/>
+	<field name="TC_SHIPMENT_ID" class="java.lang.String"/>
+	<field name="SHIP_DATE" class="java.lang.String"/>
+	<variable name="sumQty" class="java.lang.Integer" resetType="Group" resetGroup="StmHeader" calculation="Sum">
+		<variableExpression><![CDATA[$F{SHIP_QTY}]]></variableExpression>
+	</variable>
+	<group name="HeaderGroupSJ" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{TC_SHIPMENT_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="118">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<image>
+					<reportElement x="0" y="2" width="160" height="50" uuid="90ea7692-fa22-4565-a57b-eb54d552dde1"/>
+					<imageExpression><![CDATA["C:/application/atoreps/jasper/MPPA_LOGO.png"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement x="180" y="2" width="250" height="30" uuid="df50fe90-607e-41ec-9743-d3f1a385d8ea"/>
+					<textElement textAlignment="Center">
+						<font size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Stock Tranfer Manifest]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="179" y="32" width="100" height="16" uuid="1ef4aeb3-2f44-4fa0-9f20-8e327682c9fb">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement>
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Load Number]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="179" y="48" width="100" height="16" uuid="2cf7635a-678d-49ea-8c47-54390b6b993c">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement>
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Shipped Date]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="280" y="32" width="120" height="16" uuid="14db228c-1df1-40db-b0d2-3e667d889626">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[" : "+$F{TC_SHIPMENT_ID}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="280" y="48" width="120" height="16" uuid="67c06d62-1279-42c9-9c1a-d4fd5defbc7b">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[" : "+$F{SHIP_DATE}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="67" width="230" height="16" isPrintInFirstWholeBand="true" uuid="6b1a1ba1-fc80-4a4c-b6cf-d5fcad9f5e85">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{STORE}+" - "+$F{STORE_NAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="93" width="120" height="16" uuid="f481746d-9c2d-4ff7-a5f1-40fc6499d5cf">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[STM NBR]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="120" y="93" width="50" height="16" uuid="c7858176-49dd-4fd8-b9dc-0d1a1003815d">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[SKU]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="170" y="93" width="170" height="16" uuid="56cd2a5b-494e-43bf-ab6f-6bee84187c40">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[SKU Description]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="340" y="93" width="50" height="16" uuid="f64d2e89-b966-4ac5-9650-0a409238c4ab">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Collies]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="390" y="93" width="50" height="16" uuid="d230eb4e-34cd-4107-9002-9fad892a6a59">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[UoM]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="440" y="93" width="60" height="16" uuid="51183965-762a-41aa-be7f-dfe610d0619e">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[STD]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="500" y="93" width="55" height="16" uuid="0d5d6b65-9f5a-4966-a7d0-39299629996b">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="10"/>
+					</textElement>
+					<text><![CDATA[Ship Qty]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="113" width="555" height="1" uuid="ab9c584b-eb2e-42a7-a9a3-dd60a8f43dad">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+				</line>
+				<line>
+					<reportElement x="0" y="117" width="555" height="1" uuid="d1ec134f-baf6-4eed-80af-4ab85306e78d">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+				</line>
+				<line>
+					<reportElement x="0" y="88" width="555" height="1" uuid="e45abeac-e244-4594-85c9-fc89ca8a0b6f">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					</reportElement>
+				</line>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="StmHeader">
+		<groupExpression><![CDATA[$F{STM_NBR}]]></groupExpression>
+		<groupHeader>
+			<band height="32">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<textField>
+					<reportElement x="0" y="0" width="130" height="16" uuid="f2e764b3-5306-4a10-bfad-108839a35e10">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{STM_NBR}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="16" width="130" height="16" uuid="d1bf562b-714a-4205-b7d3-7fbcc41c5c43">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textFieldExpression><![CDATA[$F{OB_CTN}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="340" y="16" width="50" height="16" uuid="257fa294-a916-4826-a37b-3ccfc6ab8341">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$F{COLLIE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="STMFooter">
+		<groupExpression><![CDATA[$F{STM_NBR}]]></groupExpression>
+		<groupFooter>
+			<band height="18">
+				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				<staticText>
+					<reportElement x="400" y="0" width="100" height="16" uuid="771f3a5e-136c-457b-8c48-96edd074086c">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total Qty : ]]></text>
+				</staticText>
+				<textField pattern="">
+					<reportElement x="500" y="0" width="55" height="16" uuid="6cf5f3d3-fd1a-4456-95e8-758c81a12650">
+						<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					</reportElement>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{sumQty}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="18" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="120" y="0" width="66" height="16" uuid="9c2d80df-0ee1-4fbd-9eca-3d7eb1576992">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SKU}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="170" y="0" width="170" height="16" uuid="cd10756b-0a73-4e38-b5df-7eed036049d8">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{SKU_DESC}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="50" height="16" uuid="1ddd2ae6-d924-4bfd-8716-f0b3953be499">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{UOM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="440" y="0" width="60" height="16" uuid="aaa1eea4-8a76-4ea5-97f1-56cabf3893c4">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{STD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="500" y="0" width="55" height="16" printWhenGroupChanges="STMFooter" uuid="03dd9712-bdea-4cf4-9166-b1a87cba0d75">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{SHIP_QTY}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="16">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField>
+				<reportElement x="180" y="0" width="200" height="16" uuid="1ebddf28-582d-4a87-9a02-62647255962b">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["Page : "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

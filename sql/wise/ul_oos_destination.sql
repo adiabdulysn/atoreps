@@ -1,0 +1,2 @@
+INSERT INTO wise.oos (cut_off_date, region, format, store_code, store_name, div_name, group_name, old_dept_name, dept_name, class_name, item_code, item_description, matrix_abcxyz, source_wh, stock_category, oos_dc, from_dc, oos_supplier, from_supplier, oos_all, poos_all, pareto, pure, block_md, autorep, singlepick, dc_insufficient, dc_assortment, oos_sl_supplier, oos_forever, daily_basket, mhi_timika, kpe, asoh, safety_stock, purchase_needed, sales_lost, intransit, on_ordered, sum_ordered, notes)
+      VALUES ?

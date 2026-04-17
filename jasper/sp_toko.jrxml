@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
+<!-- 2023-10-24T16:46:15 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sp_toko" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="575" leftMargin="10" rightMargin="10" topMargin="20" bottomMargin="20" uuid="4703f832-44aa-4047-86cb-5814bfeb7447">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.governor.max.pages.enabled" value="true"/>
+	<property name="net.sf.jasperreports.governor.max.pages" value="99999"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PROD"/>
+	<parameter name="a_tc_shipment_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select a.TC_SHIPMENT_ID,O_FACILITY_ALIAS_ID DC,O_FACILITY_NAME DC_NAME,
+'Kawasan,Graha_Raharja_Balaraja,Industrial_Estate,Kp.petuey,Desa_Tobat,Kec_Balaraja,TANGERANG'DC_ADRESS,
+case when  PICK_LOCN_ASSIGN_TYPE in ('DPL','DPS','DOL','DOS','LOL','LOS','DTL','DTS','DGL','DGS','DKL','LKZ','DKS','LKL','DNL','DNS','LNL','LNS','LNZ') then'FP.01.04/IV/0032-e/2020'
+             when PICK_LOCN_ASSIGN_TYPE in ('ABS','AKB','AKD','AKL','AKN','AKS','AKZ') then'FK.01.01/VI/1663-e/2020' end PBF,'021-5952075'DC_TELP,f.FACILITY_ID,c.D_FACILITY_ALIAS_ID STORE,FINAL_DEST_FACILITY_ALIAS_ID Toko,c.D_FACILITY_NAME Store_name,
+SUBSTR(comments,INSTR(comments,'PIC:')+4,INSTR(comments,CHR(10),1,1)-INSTR(comments,'PIC:')-4) APOTEKER
+        , SUBSTR(comments,INSTR(comments,'Nomor1:')+7,INSTR(comments,CHR(10),1,2)-INSTR(comments,'Nomor1:')-7) NO_SITOizin_Usaha
+        , SUBSTR(comments,INSTR(comments,'Nomor2:')+7,INSTR(comments,CHR(10),1,3)-INSTR(comments,'Nomor2:')-7) NO_IKTTK_SIPA
+        , SUBSTR(comments,INSTR(comments,'Jenis:')+6) jenis,TELEPHONE_NUMBER,f.ADDRESS_1,f.ADDRESS_2,f.CITY,f.STATE_PROV,f.ADDRESS_3,case when f.ADDRESS_1 in('JL','jl','Mall''NO','No','no data','NO DATA','-') or f.ADDRESS_1 is null then g.ADDRESS_2 ELSE f.ADDRESS_1||', '||f.ADDRESS_2||', '||f.ADDRESS_3 END AS ADDRESS
+        ,c.TC_ORDER_ID,d.ITEM_NAME,d.DESCRIPTION,
+        PICK_LOCN_ASSIGN_TYPE,COMMERCE_ATTRIBUTE1 ZAT_AKTIF_Prekursor_Farmasi,
+COMMERCE_ATTRIBUTE2 Bentuk_dan_Kekuatan_sediaan,
+case when d.BASE_STORAGE_UOM_ID ='657'then 'Pcs'
+             when d.BASE_STORAGE_UOM_ID ='281' then 'Hecto' end Satuan,
+b.SIZE_VALUE  QTY,mppa_dc.terbilang(b.SIZE_VALUE) terbilang,to_char(a.LAST_UPDATED_DTTM,'dd-Mon-yyyy') LAST_UPDATED,
+   case when e.PICK_LOCN_ASSIGN_TYPE in ('DPL','DPS') then 'Surat pesanan  Obat mengandung Prekursor Farmasi'
+        when e.PICK_LOCN_ASSIGN_TYPE in ('DOL','DOS','LOL','LOS') then 'Surat pesanan  Obat Non Prekursor Farmasi'
+        when e.PICK_LOCN_ASSIGN_TYPE in ('ABS','AKB','AKD','AKL','AKN','AKS','AKZ') then 'Surat pesanan  Alat Kesehatan Farmasi'
+        when e.PICK_LOCN_ASSIGN_TYPE in ('DTL','DTS') then 'Surat pesanan  Obat Obat Tertentu'
+        when e.PICK_LOCN_ASSIGN_TYPE in ('DGL','DGS','DKL','LKZ','DKS','LKL') then 'Surat pesanan  Obat Keras'
+        when e.PICK_LOCN_ASSIGN_TYPE in ('DNL','DNS','LNL','LNS','LNZ') then 'Surat pesanan Non Obat'end  Surat_Pesanan,
+case when  PICK_LOCN_ASSIGN_TYPE in ('DPL','DPS','DOL','DOS','LOL','LOS','DTL','DTS','DGL','DGS','DKL','LKZ','DKS','LKL','DNL','DNS','LNL','LNS','LNZ') then'Nama PBF'
+             when PICK_LOCN_ASSIGN_TYPE in ('ABS','AKB','AKD','AKL','AKN','AKS','AKZ') then'Nama PAK' end nama,
+   case when  PICK_LOCN_ASSIGN_TYPE in ('DPL','DPS','DOL','DOS','LOL','LOS','DTL','DTS','DGL','DGS','DKL','LKZ','DKS','LKL','DNL','DNS','LNL','LNS','LNZ') then'Izin PBF'
+             when PICK_LOCN_ASSIGN_TYPE in ('ABS','AKB','AKD','AKL','AKN','AKS','AKZ') then'Izin PAK' end izin
+from outpt_lpn a,outpt_lpn_detail b, outpt_orders c,item_cbo d,item_facility_mapping_wms e,facility_alias f,facility_contact g
+where a.TC_LPN_ID=b.TC_LPN_ID
+and a.INVC_BATCH_NBR=b.INVC_BATCH_NBR
+and b.INVC_BATCH_NBR=c.INVC_BATCH_NBR
+and a.INVC_BATCH_NBR=c.INVC_BATCH_NBR
+and b.MINOR_ORDER_NBR=c.tc_order_id
+and b.item_id=d.item_id
+and b.item_id=e.item_id
+and d.item_id=e.item_id
+and FINAL_DEST_FACILITY_ALIAS_ID=f.FACILITY_ALIAS_ID
+and f.FACILITY_ID=g.FACILITY_ID (+)
+and e.FACILITY_ID='126'
+and substr(d.ITEM_NAME,1,2)='68'
+$P!{a_tc_shipment_id}
+and O_FACILITY_ALIAS_ID ='104'
+order by Surat_Pesanan]]>
+	</queryString>
+	<field name="TC_SHIPMENT_ID" class="java.lang.String"/>
+	<field name="DC" class="java.lang.String"/>
+	<field name="DC_NAME" class="java.lang.String"/>
+	<field name="DC_ADRESS" class="java.lang.String"/>
+	<field name="PBF" class="java.lang.String"/>
+	<field name="DC_TELP" class="java.lang.String"/>
+	<field name="FACILITY_ID" class="java.math.BigDecimal"/>
+	<field name="STORE" class="java.lang.String"/>
+	<field name="TOKO" class="java.lang.String"/>
+	<field name="STORE_NAME" class="java.lang.String"/>
+	<field name="APOTEKER" class="java.lang.String"/>
+	<field name="NO_SITOIZIN_USAHA" class="java.lang.String"/>
+	<field name="NO_IKTTK_SIPA" class="java.lang.String"/>
+	<field name="JENIS" class="java.lang.String"/>
+	<field name="TELEPHONE_NUMBER" class="java.lang.String"/>
+	<field name="ADDRESS_1" class="java.lang.String"/>
+	<field name="ADDRESS_2" class="java.lang.String"/>
+	<field name="CITY" class="java.lang.String"/>
+	<field name="STATE_PROV" class="java.lang.String"/>
+	<field name="ADDRESS_3" class="java.lang.String"/>
+	<field name="ADDRESS" class="java.lang.String"/>
+	<field name="TC_ORDER_ID" class="java.lang.String"/>
+	<field name="ITEM_NAME" class="java.lang.String"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="PICK_LOCN_ASSIGN_TYPE" class="java.lang.String"/>
+	<field name="ZAT_AKTIF_PREKURSOR_FARMASI" class="java.lang.String"/>
+	<field name="BENTUK_DAN_KEKUATAN_SEDIAAN" class="java.lang.String"/>
+	<field name="SATUAN" class="java.lang.String"/>
+	<field name="QTY" class="java.math.BigDecimal"/>
+	<field name="TERBILANG" class="java.lang.String"/>
+	<field name="LAST_UPDATED" class="java.lang.String"/>
+	<field name="SURAT_PESANAN" class="java.lang.String"/>
+	<field name="NAMA" class="java.lang.String"/>
+	<field name="IZIN" class="java.lang.String"/>
+	<variable name="No" class="java.lang.Integer" resetType="Group" resetGroup="surat_pesanan">
+		<variableExpression><![CDATA[$V{No}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="g" class="java.lang.Integer">
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="Nog" class="java.lang.Integer">
+		<variableExpression><![CDATA[$V{g}+1]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<group name="surat_pesanan" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{SURAT_PESANAN}.replaceAll( "Surat", "Mengajukan" )]]></groupExpression>
+		<groupHeader>
+			<band height="287">
+				<textField>
+					<reportElement x="12" y="0" width="555" height="20" uuid="657f5ed1-a78d-47ff-abb6-2b7101d5bf6d"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}.toUpperCase()]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="12" y="16" width="555" height="20" uuid="d9d8156e-31de-428c-ad54-dea65493d30a"/>
+					<textElement textAlignment="Center">
+						<font size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA["NO SP: "+$F{TC_SHIPMENT_ID}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="13" y="40" width="552" height="20" uuid="f7263fe9-2e67-4d3d-92a8-d53e0f05efdf"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Yang bertanda Tangan di bawah ini : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="60" width="84" height="20" uuid="3ef832db-0a3b-413d-a03a-583b3c36bb4f"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Nama]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="80" width="84" height="20" uuid="c1c1f3d3-0b7f-4b9e-9a3c-911c496cb5bd"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Jabatan]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="179" width="84" height="30" uuid="d69b18de-3c74-42e1-85a7-d1532d0cedb1"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Alamat]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="209" width="84" height="20" uuid="86fc8886-0204-458a-a91f-6b0800404529"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Telp]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="13" y="100" width="84" height="20" uuid="ec3166ca-03b1-4a94-865f-3b1f5a9f6cd5"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[No Izin]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="60" width="11" height="20" uuid="a1c34bc1-976c-4abe-b482-9c8dd656bbba"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="80" width="11" height="20" uuid="ad046fdc-90dd-4ae2-9fe7-c98a7a38ed6f"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="179" width="11" height="30" uuid="eddcd605-4aed-4300-9538-d940e874d297"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="209" width="11" height="20" uuid="8b218319-b569-461f-a60b-22a56c5d8011"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="100" width="11" height="20" uuid="fa6261b9-091c-473b-99a7-1b684f7d7c48"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="108" y="100" width="457" height="20" uuid="1b664feb-53ae-40bd-9d7c-9360fe2faa53"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NO_IKTTK_SIPA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="60" width="457" height="20" uuid="69c40361-edf9-4ebc-a336-27a03b8c824a"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{APOTEKER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="13" y="120" width="552" height="20" uuid="7385563e-95ba-4b1b-b468-e1355e2fa900"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}.replaceAll( "Surat", "Mengajukan" )+" kepada :"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="179" width="457" height="30" uuid="552447b6-24e8-4478-906f-44d778530886"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DC_ADRESS}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="13" y="229" width="552" height="20" uuid="cdeb6fdb-d93c-4996-828d-cef6bafd51c3"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}.replaceAll( "Surat pesanan", "Jenis" )+" yang dipesan adalah :"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="108" y="80" width="457" height="20" uuid="192b2d18-b95f-48b5-956e-333846bbb059"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Penanggung Jawab Teknis]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="20" y="250" width="46" height="35" uuid="17deb91c-bad5-45dc-b4bd-24dcfd7cf122"/>
+					<box leftPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[STM NO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="0" y="250" width="20" height="35" uuid="5dbc77bf-d616-4faf-8dfc-d04434027077"/>
+					<box leftPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[NO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="66" y="250" width="53" height="35" uuid="7dd22494-1664-4ff8-98af-b63ca7d680b3"/>
+					<box leftPadding="2">
+						<pen lineWidth="0.25"/>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[SKU]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="108" y="209" width="457" height="20" uuid="ea7d8318-3a45-464e-9524-88333a529661"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{DC_TELP}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="119" y="250" width="252" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="6baa2be4-2c3a-4592-89bb-834109058130"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Nama Obat":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="371" y="250" width="40" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="95e4b360-8cb5-4c66-a504-b346680105cc"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Satuan":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="411" y="250" width="55" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="7fc77216-45fb-4bba-bd69-de71d6dcc8ba"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Jumlah":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="471" y="250" width="35" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="a3fb05f4-1719-49df-aff8-8b464ae64bf1"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Jumlah":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="436" y="251" width="35" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="a8cd6f64-0538-4ece-8c7d-16df6e361445"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Satuan":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="360" y="250" width="77" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="716a54ac-2bc6-4c74-a724-19ca1e031e1a"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Bentuk dan Kekuatan Sediaan":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="269" y="250" width="90" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="711b86b8-4da5-4c81-b75a-773d1e1febc6"/>
+					<box leftPadding="1" rightPadding="1">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Zat Aktif Prekursor Farmasi":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="119" y="250" width="150" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="24c45324-caf8-4a08-9343-4e9ded92d532"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Nama Obat":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="506" y="250" width="69" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="b5f371ef-55d9-4355-8fb5-724fcec3db70"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Keterangan":""]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="159" width="457" height="20" uuid="90c43b3e-59c0-4462-b9f7-27bee12e726e"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{PBF}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="97" y="159" width="11" height="20" uuid="d9857946-261c-487c-af72-8d070ff6731b"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="467" y="250" width="109" height="35" isRemoveLineWhenBlank="true" forecolor="#000000" uuid="a577d8e3-0dad-4d07-895e-402590774e2d"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" markup="none">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?"Keterangan":""]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="97" y="139" width="11" height="20" uuid="af1df16a-cd80-4c42-bae9-a8ec64ec3634"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="108" y="139" width="457" height="20" uuid="5d36bd43-b0d1-4721-94d9-633991685e09"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[PT. Matahari Putra Prima]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="13" y="140" width="84" height="20" uuid="a4f15237-e54b-4462-84d0-01decc5d0bcd"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NAMA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="13" y="159" width="84" height="20" uuid="b67a842a-e69d-4118-a990-203f1d54584e"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{IZIN}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="231">
+				<textField>
+					<reportElement x="12" y="1" width="553" height="20" uuid="7b9adde9-45fe-41b9-aaba-9dfd0678503c"/>
+					<textElement>
+						<font size="11" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Jenis"+($F{SURAT_PESANAN}.replaceAll( "Surat pesanan", "" )).toUpperCase()+" tersebut akan digunakan untuk memenuhi kebutuhan :"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="12" y="21" width="85" height="20" uuid="e0f96199-ee05-4680-b3b5-fead37b38adc"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Nama Store]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="12" y="41" width="85" height="20" uuid="7c8008e8-958c-4807-a32f-fa9c9f37b4cb"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Alamat Lengkap]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="12" y="61" width="85" height="20" uuid="d170177a-e130-40cb-bf25-63caeb2431a2"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Izin Usaha]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="12" y="81" width="85" height="20" uuid="7b773e46-19a8-49e9-8a0d-b6a46b7d1ab7"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Telp]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="21" width="11" height="20" uuid="387b1b19-8c91-4d32-acf8-944ebe35ce1e"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="41" width="11" height="20" uuid="402a9649-e260-4f72-8b0f-a00e6f2d5191"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="61" width="11" height="20" uuid="defe340b-67b1-493c-b129-550f659ae3b2"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="97" y="81" width="11" height="20" uuid="259f3dd5-bca6-4b3f-af57-8de8592bc735"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="108" y="21" width="374" height="20" uuid="ec7dc945-2b3d-4281-bfb6-ba7d4a5f3bdf"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{STORE_NAME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="61" width="374" height="20" uuid="fad264af-ce1d-4ff9-804b-755aa227b678"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NO_SITOIZIN_USAHA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="81" width="374" height="20" uuid="53b9cca0-4a2b-4299-b270-1254d3be5fad"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{TELEPHONE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="334" y="104" width="236" height="20" uuid="658ea53e-9ca3-4f14-9c2b-b71d987d926a"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[", "+$F{LAST_UPDATED}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="299" y="124" width="254" height="20" uuid="281ba2df-d492-4c84-80b8-74b201ffe624"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<text><![CDATA[Pemesan,]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="299" y="181" width="254" height="20" uuid="c7bd12a9-907c-4cac-9868-ccd8364cd967"/>
+					<textElement textAlignment="Center">
+						<font size="11" isBold="false" isUnderline="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{APOTEKER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="290" y="201" width="285" height="20" uuid="df4a0564-3ee8-4032-a3f1-fb525e6c1871"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{NO_IKTTK_SIPA}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="333" y="104" width="95" height="20" uuid="94ac61a1-05ad-4a75-a2cf-98bcfb6ae107"/>
+					<textElement textAlignment="Center"/>
+					<textFieldExpression><![CDATA[$F{CITY}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="108" y="41" width="373" height="20" uuid="c5ef6480-d5dd-43d9-967b-8cd7e0dedf50"/>
+					<textElement>
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ADDRESS}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement mode="Transparent" x="20" y="-1" width="46" height="20" forecolor="#000000" backcolor="#FFFFFF" uuid="15fb9835-2753-40bf-895c-ef18a5c203c9"/>
+				<box leftPadding="1">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="9" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TC_ORDER_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="-1" width="20" height="20" uuid="f06fa005-911e-4ff1-90bf-cb2a6137bef2"/>
+				<box leftPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{No}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="66" y="-1" width="53" height="20" uuid="663e0bbc-61fb-43a4-b439-13c3af6e9216"/>
+				<box leftPadding="1">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ITEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="119" y="-1" width="252" height="20" isRemoveLineWhenBlank="true" uuid="0e73f79f-72c4-4087-94dd-d78113a1da2f"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{DESCRIPTION}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="371" y="-1" width="40" height="20" isRemoveLineWhenBlank="true" uuid="f387b516-54ef-4b93-b6ad-e5bf1e05adb5"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{SATUAN}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="411" y="-1" width="55" height="20" isRemoveLineWhenBlank="true" uuid="2734e2ef-1ed4-40b2-8cad-8b67f49e0f7b"/>
+				<box topPadding="0" leftPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{QTY}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="467" y="-1" width="109" height="20" isRemoveLineWhenBlank="true" uuid="4174433a-5aaf-40be-97f7-7c2ab6749b7d"/>
+				<box topPadding="0" leftPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}!="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{TERBILANG}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="436" y="-1" width="35" height="20" isRemoveLineWhenBlank="true" uuid="5bdebc5d-93bc-4802-8b6a-b92cf134b101"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{SATUAN}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="119" y="0" width="150" height="20" isRemoveLineWhenBlank="true" uuid="708dbef2-7b52-45f6-993c-4e955129085d"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{DESCRIPTION}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="269" y="0" width="90" height="20" isRemoveLineWhenBlank="true" uuid="1b621800-cc48-44eb-95df-8831aeaaeaf2"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{ZAT_AKTIF_PREKURSOR_FARMASI}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="-1" width="77" height="20" isRemoveLineWhenBlank="true" uuid="8ca32c6b-5ba7-4dcc-875e-56d73fd92d37"/>
+				<box leftPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{BENTUK_DAN_KEKUATAN_SEDIAAN}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="506" y="0" width="69" height="20" isRemoveLineWhenBlank="true" uuid="5b6b26f5-b01b-4062-a9d0-7f9183a7d215"/>
+				<box topPadding="0" leftPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{TERBILANG}:""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="471" y="-1" width="35" height="20" isRemoveLineWhenBlank="true" uuid="4f2b4178-a523-4130-ae21-8f71f73db211"/>
+				<box topPadding="0" leftPadding="0" rightPadding="2">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="SansSerif" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SURAT_PESANAN}=="Surat pesanan  Obat mengandung Prekursor Farmasi"?$F{QTY}:""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="238" y="0" width="61" height="20" uuid="04a39a93-72e5-453d-b6b2-11d3736f35e6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Hal : "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="299" y="0" width="40" height="20" uuid="5f39ccdf-8d15-4162-8890-944dd7de8c30"/>
+				<textFieldExpression><![CDATA["/" + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

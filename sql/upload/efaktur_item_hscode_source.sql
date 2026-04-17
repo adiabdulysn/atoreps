@@ -1,0 +1,1 @@
+select item "item", hs_code "hs_code", to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS') "last_update" from MPP_ITEM_HSCODE

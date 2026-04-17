@@ -1,0 +1,98 @@
+{
+  "name": "mppa.atoreps",
+  "version": "2.4.5",
+  "description": "Automations Report Systems",
+  "author": "Adi Abdul Yasin <adi.abdul.ysn@gmail.com> (https://dhipo.my.id)",
+  "license": "ISC",
+  "main": "app.js",
+  "icon": "./assets/img/logo.ico",
+  "scripts": {
+    "dev": "electron .",
+    "prebuild": "rimraf dist",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.atoreps.app",
+    "productName": "atoreps",
+    "copyright": "© 2025 Adi Abdul Yasin. All rights reserved.",
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/oracledb/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "lib",
+        "to": "lib"
+      },
+      {
+        "from": "sql",
+        "to": "sql"
+      },
+      {
+        "from": "template",
+        "to": "template"
+      },
+      {
+        "from": "emailPassword.json",
+        "to": "emailPassword.json"
+      },
+      {
+        "from": "taskScheduler.json",
+        "to": "taskScheduler.json"
+      }
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!dist/**/*",
+      "!build/**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,test,obj,bin}",
+      "!package.json.bak",
+      "!*.log"
+    ],
+    "win": {
+      "icon": "./assets/img/favicon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "atoreps"
+    }
+  },
+  "devDependencies": {
+    "electron": "^22.3.26",
+    "electron-builder": "^26.0.12",
+    "nodemon": "^3.1.11"
+  },
+  "dependencies": {
+    "basic-ftp": "^5.0.4",
+    "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
+    "jquery": "^3.7.1",
+    "lodash": "^4.17.21",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.6.0",
+    "mysql2": "^3.16.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.11",
+    "nodemailer-ntlm-auth": "^1.0.4",
+    "numeral": "^2.0.6",
+    "oracledb": "^6.10.0",
+    "p-queue": "^9.0.1",
+    "ping": "^0.4.4"
+  }
+}

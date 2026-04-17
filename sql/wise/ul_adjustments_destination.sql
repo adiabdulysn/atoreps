@@ -1,0 +1,12 @@
+ INSERT INTO adjustments (dc, pixtran_number, pixtran_code, pixtran_name, adjustment_type, adjustment_date, locn_hdr_id, lpn_number, item_id, adjustment_quantity, adjustment_value, ucl_user_id)
+      VALUES ?
+ON DUPLICATE KEY UPDATE dc = VALUES(dc)
+                      , pixtran_name = VALUES(pixtran_name)
+                      , adjustment_type = VALUES(adjustment_type)
+                      , adjustment_date = VALUES(adjustment_date)
+                      , locn_hdr_id = VALUES(locn_hdr_id)
+                      , lpn_number = VALUES(lpn_number)
+                      , item_id = VALUES(item_id)
+                      , adjustment_quantity = VALUES(adjustment_quantity)
+                      , adjustment_value = VALUES(adjustment_value)
+                      , ucl_user_id = VALUES(ucl_user_id)

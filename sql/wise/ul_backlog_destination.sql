@@ -1,0 +1,2 @@
+INSERT INTO wise_arch.backlog (dc, merch_type, territory, facility_alias_id, stm_number, stm_status, stm_type, stm_date, verified_date, waved_date, item_id, oos, quantity, cartons, volume, weight, value)
+VALUES ?

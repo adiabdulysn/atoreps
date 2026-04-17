@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="alias" content="atoreps">
+    <meta name="description" content="Automations Report Systems">
+    <meta name="author" content="Adi Abdul Yasin">
+    <link rel="shortcut icon" href="../assets/img/logo.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../assets/lib/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="container">
+        <div class="header bg-dark">
+            <img src="../assets/img/logo.png" style="width: 50px;">
+            <h1 class="text-header" id="app_name"></h1>
+            <button type="button" id="miniMaze" onclick="Minimize();" title="Minimaze App">
+                <img src="../assets/img/min_white.gif">
+            </button>
+        </div>
+        <div class="content bg-body">
+            <div class="sidebar bg-dark">
+                <div class="btn-reload" onclick="Reload();" title="Restart App" style="text-align: center;">
+                    <h1 style="margin:0px; color: #00dfdf; font-size: 24px; text-align: center;"><i
+                            class="fas fa-power-off"></i></h1>
+                </div>
+            </div>
+            <div class="body">
+                <table width="100%" style="margin-top: 20px;">
+                    <tr>
+                        <td>
+                            <h6 class="clock"><i class="far fa-clock"></i> <span id="clock"></span></h6>
+                            <p style="margin: 0px; color: white; font-size: 13px;" id="date"></p>
+                        </td>
+                        <td>
+                            <h6 class="location" id="location"></h6>
+                        </td>
+                    </tr>
+                </table>
+                <div class="card-log bg-dark">
+                    <textarea name="logs" id="logs" rows="17" readonly="true" disabled="true"></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-1">
+                        <p class="network-status">WMS : <span id="host_primary" style="font-weight: bold;"></span></p>
+                        <p class="network-status">HO : <span id="host_secondary" style="font-weight: bold;"></span></p>
+                        <p style="margin-top: 20px;margin-bottom: 2px; font-size: 12px;"><i style="color: #fff;">Version ware : <span id="version"></span></i></p>
+                        <p style="margin-top: 0px;font-size: 12px;"><i style="color: #fff;">© Adi AY</i></p>
+                        <input type="hidden" id="job_status">
+                    </div>
+                    <div class="col-2">
+                        <div class="info bg-dark">
+                            <p id="info"></p>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="author" style="margin-top: 30px;">
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Insert this line above script imports  -->
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+    <script src="./main.js"></script>
+</body>
+
+</html>

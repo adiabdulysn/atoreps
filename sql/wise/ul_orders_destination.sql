@@ -1,0 +1,11 @@
+ INSERT INTO orders (dc, facility_id, shipment_number, order_number, order_date, order_type, pick_type, storage_type, sku_count, waved_date, packed_date, loaded_date, shipped_date)
+      VALUES ?
+ON DUPLICATE KEY UPDATE dc = VALUES(dc)
+                      , facility_id = VALUES(facility_id)
+                      , order_date = VALUES(order_date)
+                      , order_type = VALUES(order_type)
+                      , sku_count = VALUES(sku_count)
+                      , waved_date = VALUES(waved_date)
+                      , packed_date = VALUES(packed_date)
+                      , loaded_date = VALUES(loaded_date)
+                      , shipped_date = VALUES(shipped_date)
